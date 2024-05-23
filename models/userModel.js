@@ -10,7 +10,8 @@ mongoose.connect("mongodb+srv://vbhv15:vaibhav@cluster0.pyiue9n.mongodb.net/?ret
 const userSchema = mongoose.Schema({
   username: {
     type: String,
-    required: true
+    required: false,
+    default: "Vaibhav Gupta"
   },
   password: {
     type: String,
@@ -30,6 +31,10 @@ const userSchema = mongoose.Schema({
     type: Array,
     required: false,
     default: []
+  },
+  email:{
+    type:String,
+    required: true,
   }
 })
 
