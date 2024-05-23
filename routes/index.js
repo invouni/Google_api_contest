@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const userDataModel = require('../models/userModel');
-const bcrypt = require('bcrypt');
+
 
 // Route to render the home page
 router.get('/', (req, res) => {
-  res.render('index');
+  try{
+    res.render('index');
+  }catch(e) {
+    console.log(e);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 module.exports = router;

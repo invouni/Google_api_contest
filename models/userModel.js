@@ -11,30 +11,36 @@ const userSchema = mongoose.Schema({
   username: {
     type: String,
     required: false,
-    default: "Vaibhav Gupta"
+    default: "Vaibhav Gupta",
+    unique: true
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    unique: false
   },
   profilePicture: {
     type: String,
     required: false,
-    default: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freepik.com%2Ffree-photos-vectors%2Fblue-color&psig=AOvVaw1lU8wTlW4oe_RBIVenVfWN&ust=1716398711325000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCICK-s6hn4YDFQAAAAAdAAAAABAE"
+    default: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freepik.com%2Ffree-photos-vectors%2Fblue-color&psig=AOvVaw1lU8wTlW4oe_RBIVenVfWN&ust=1716398711325000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCICK-s6hn4YDFQAAAAAdAAAAABAE",
+    unique: false
   },
   points: {
     type: Number,
     required: false,
-    default: 0
+    default: 0,
+    unique: false
   },
   badges: {
     type: Array,
     required: false,
-    default: []
+    default: [],
+    unique: false
   },
   email:{
     type:String,
     required: true,
+    unique: true
   }
 })
 

@@ -6,51 +6,65 @@ const passport = require('passport');
 
 // Route to render registration form
 router.get('/register', (req, res) => {
-  res.render('register');
+  try {
+    res.render('register');
+  } catch (error) {
+    console.error('Error rendering registration form:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 // Route to render login form
 router.get('/login', (req, res) => {
-  res.render('login');
+  try {
+    res.render('login');
+  } catch (error) {
+    console.error('Error rendering login form:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
-// Route to render user profile, protected by isLoggedIn middleware
-router.get('/userProfile', isLoggedIn, (req, res) => {
-  res.render('userProfile');
-});
+
 
 // Route to handle registration
 router.post('/register', async (req, res) => {
   try {
-    let pass = await bcrypt.hash(req.body.password, 10);
+    let hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = new userDataModel({
       email: req.body.email,
-      password: pass
+      password: hashedPassword
     });
 
     await user.save();
-    console.log(user)
-    res.redirect("/auth/login");
+    console.log('New user registered:', user);
+    res.redirect('/auth/login');
   } catch (error) {
-    console.error(error);
-    res.redirect('/auth/register');
+    console.error('Error during registration:', error);
+    res.status(500).send('Internal Server Error');
   }
-  
 });
 
 // Route to handle login
-router.post('/login', passport.authenticate('local', { 
-  failureRedirect: '/auth/login', 
-  successRedirect: '/auth/userProfile' 
-}));
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      console.error('Error during login:', err);
+      return next(err);
+    }
+    if (!user) {
+      console.log('Login failed:', info.message);
+      return res.redirect('/auth/login');
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        console.error('Error logging in user:', err);
+        return next(err);
+      }
+      return res.redirect('/user/userProfile');
+    });
+  })(req, res, next);
+});
 
-// Middleware to check if the user is logged in
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  } else {
-    res.redirect('/auth/login');
-  }
-}
+
 
 module.exports = router;
